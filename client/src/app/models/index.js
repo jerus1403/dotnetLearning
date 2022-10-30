@@ -1,0 +1,1 @@
+export { IActivity } from "./activity";
