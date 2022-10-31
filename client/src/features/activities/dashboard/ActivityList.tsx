@@ -6,12 +6,14 @@ import { IActivity } from "../../../app/models";
 interface IActivityListProps {
     activities: IActivity[];
     selectActivityHandler: (selectedId: string) => void;
+    deleteActivityHandler: (deleteId: string) => void;
 }
 
 export const ActivityList = (props: IActivityListProps) => {
     const {
         activities,
         selectActivityHandler,
+        deleteActivityHandler,
     } = props;
 
     return (
@@ -32,6 +34,12 @@ export const ActivityList = (props: IActivityListProps) => {
                                     content="View"
                                     color="blue"
                                     onClick={() => selectActivityHandler(activity.id)}
+                                />
+                                <Button
+                                    floated="right"
+                                    content="Delete"
+                                    color="red"
+                                    onClick={() => deleteActivityHandler(activity.id)}
                                 />
                                 <Label
                                     basic

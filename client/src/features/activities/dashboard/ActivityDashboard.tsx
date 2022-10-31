@@ -1,4 +1,4 @@
-import { Grid, List } from "semantic-ui-react";
+import { Grid } from "semantic-ui-react";
 
 //Component imports and etc.
 import { IActivity } from "../../../app/models";
@@ -14,6 +14,8 @@ interface IActivityDashBoardProps {
     formOpen: (id: string) => void;
     formClose: () => void;
     editMode: boolean;
+    createOrEdit: (activity: IActivity) => void;
+    deleteActivityHandler: (deleteId: string) => void;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
@@ -25,6 +27,8 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
         formOpen,
         formClose,
         editMode,
+        createOrEdit,
+        deleteActivityHandler,
     } = props;
 
     return (
@@ -33,6 +37,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                 <ActivityList
                     activities={activities}
                     selectActivityHandler={selectActivityHandler}
+                    deleteActivityHandler={deleteActivityHandler}
                 />
             </Grid.Column>
             <Grid.Column width={'6'}>
@@ -45,8 +50,9 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                 )}
                 {editMode && (
                     <ActivityForm
-                        activity={selectedActivity}
+                        selectedActivity={selectedActivity}
                         formClose={formClose}
+                        createOrEdit={createOrEdit}
                     />
                 )}
             </Grid.Column>

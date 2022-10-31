@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Container, List } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
+import { v4 as uuid } from 'uuid';
 
 import './style.css';
 import { IActivity } from '../models/activity';
@@ -37,7 +38,17 @@ function App() {
     setEditMode(false);
   };
 
-  console.log(selectedActivity, 'selected');
+  const createOrEditActivityHandler = (activity: IActivity) => {
+    activity.id
+      ? setActivities([...activities.filter(a => a.id !== activity.id), activity])
+      : setActivities([...activities, { ...activity, id: uuid() }]);
+    setEditMode(false);
+    setSelectedActivity(activity);
+  };
+
+  const deleteActivityHandler = (activityId: string) => {
+    setActivities([...activities.filter(a => a.id !== activityId)]);
+  };
 
   return (
     <Fragment>
@@ -53,6 +64,8 @@ function App() {
           editMode={editMode}
           formOpen={formOpenHandler}
           formClose={formCloseHandler}
+          createOrEdit={createOrEditActivityHandler}
+          deleteActivityHandler={deleteActivityHandler}
         />
       </Container>
     </Fragment>
