@@ -16,6 +16,7 @@ interface IActivityDashBoardProps {
     editMode: boolean;
     createOrEdit: (activity: IActivity) => void;
     deleteActivityHandler: (deleteId: string) => void;
+    isFormSubmitting: boolean;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
@@ -29,6 +30,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
         editMode,
         createOrEdit,
         deleteActivityHandler,
+        isFormSubmitting,
     } = props;
 
     return (
@@ -38,6 +40,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                     activities={activities}
                     selectActivityHandler={selectActivityHandler}
                     deleteActivityHandler={deleteActivityHandler}
+                    isSubmitting={isFormSubmitting}
                 />
             </Grid.Column>
             <Grid.Column width={'6'}>
@@ -53,6 +56,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                         selectedActivity={selectedActivity}
                         formClose={formClose}
                         createOrEdit={createOrEdit}
+                        isFormSubmitting={isFormSubmitting}
                     />
                 )}
             </Grid.Column>

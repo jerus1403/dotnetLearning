@@ -6,6 +6,7 @@ interface IActivityFormProps {
     selectedActivity: IActivity | undefined;
     formClose: () => void;
     createOrEdit: (activity: IActivity) => void;
+    isFormSubmitting: boolean;
 }
 
 export const ActivityForm = (props: IActivityFormProps) => {
@@ -13,6 +14,7 @@ export const ActivityForm = (props: IActivityFormProps) => {
         selectedActivity,
         formClose,
         createOrEdit,
+        isFormSubmitting,
     } = props;
 
     const intialActivityState = selectedActivity ?? {
@@ -65,6 +67,7 @@ export const ActivityForm = (props: IActivityFormProps) => {
                 />
                 <Form.Input
                     placeholder={"Date"}
+                    type={"date"}
                     name={"date"}
                     value={activity && activity.date}
                     onChange={inputOnChangeHandler}
@@ -82,6 +85,7 @@ export const ActivityForm = (props: IActivityFormProps) => {
                     onChange={inputOnChangeHandler}
                 />
                 <Button
+                    loading={isFormSubmitting}
                     floated="right"
                     positive
                     type="submit"
