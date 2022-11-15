@@ -32,7 +32,7 @@ export const NavBar = (props: INavBarProps) => {
                     <Button
                         positive
                         content="Create Activity"
-                        onClick={formOpen}
+                        onClick={() => formOpen()}
                     />
                 </Menu.Item>
             </Container>

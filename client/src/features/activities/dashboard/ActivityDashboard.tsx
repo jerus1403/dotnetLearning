@@ -17,6 +17,7 @@ interface IActivityDashBoardProps {
     createOrEdit: (activity: IActivity) => void;
     deleteActivityHandler: (deleteId: string) => void;
     isFormSubmitting: boolean;
+    loadingSelectedActivity: boolean;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
@@ -31,6 +32,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
         createOrEdit,
         deleteActivityHandler,
         isFormSubmitting,
+        loadingSelectedActivity,
     } = props;
 
     return (
@@ -49,6 +51,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                         activity={selectedActivity}
                         cancelSelectedActivity={cancelSelectedActivity}
                         formOpen={formOpen}
+                        isActivityDetailsLoading={loadingSelectedActivity}
                     />
                 )}
                 {editMode && (

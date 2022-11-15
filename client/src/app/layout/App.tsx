@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Container } from 'semantic-ui-react';
 import { v4 as uuid } from 'uuid';
 
@@ -6,76 +6,78 @@ import './style.css';
 import { IActivity } from '../models/activity';
 import { NavBar } from './NavBar';
 import { ActivityDashboard } from '../../features';
-import { agent } from '../api/agent';
 import { LoadingComponent } from './Loading';
+import {
+  activitiesSelector,
+  selectedActivitySelector,
+  loadingActivitiesSelector,
+  loadingSelectedActivitySelector,
+  editModeSelector,
+  loadingSelector,
+} from '../../State/Activities/ActivitiesSelector';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSelectedActivity, setEditMode, setLoading } from '../../State/Activities/ActivitiesActions';
+import {
+  createActivityInitiate,
+  deleteActivityInitiate,
+  updateActivityInitiate,
+} from '../../Sagas/GetActivities/ActivitiesActions';
 
 function App() {
-  const [activities, setActivities] = useState<IActivity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<IActivity | undefined>(undefined);
-  const [editMode, setEditMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    agent.Activities.list().then(response => {
-      const activityList = [...response].map(a => ({
-        ...a,
-        date: a.date.split('T')[0],
-      }));
-      setActivities(activityList);
-      setIsLoading(false);
-    });
-  }, []);
+  const activityList = useSelector(activitiesSelector);
+  const isLoadingActivities = useSelector(loadingActivitiesSelector);
+  const selectedActivity = useSelector(selectedActivitySelector);
+  const loadingSelectedActivity = useSelector(loadingSelectedActivitySelector);
+  const editMode = useSelector(editModeSelector);
+  const isLoading = useSelector(loadingSelector);
 
   const selectActivityHandler = (selectedId: string) => {
-    const selected = activities.find(activity => activity.id === selectedId);
-    setSelectedActivity(selected);
+    const foundSelectedActivity = activityList && activityList?.find(a => a.id === selectedId);
+    if (foundSelectedActivity) {
+      dispatch(getSelectedActivity(foundSelectedActivity));
+    }
   };
 
   const cancelSelectedActivity = () => {
-    setSelectedActivity(undefined);
+    dispatch(getSelectedActivity(undefined));
   };
 
   const formOpenHandler = (id?: string) => {
     id ? selectActivityHandler(id) : cancelSelectedActivity();
-    setEditMode(true);
+    dispatch(setEditMode(true));
   };
 
   const formCloseHandler = () => {
-    setEditMode(false);
+    dispatch(setEditMode(false));
   };
 
   const doneCreateOrEdit = (activity: IActivity) => {
-    setSelectedActivity(activity);
-    setEditMode(false);
-    setIsSubmitting(false);
+    dispatch(getSelectedActivity(activity));
+    dispatch(setEditMode(false));
+    dispatch(setLoading(false));
   };
 
   const createOrEditActivityHandler = (activity: IActivity) => {
-    setIsSubmitting(true);
+    dispatch(setLoading(true));
     if (activity.id) {
-      agent.Activities.update(activity).then(() => {
-        setActivities([...activities.filter(a => a.id !== activity.id), activity]);
-        doneCreateOrEdit(activity);
-      })
+      dispatch(updateActivityInitiate(activity));
+      doneCreateOrEdit(activity);
     } else {
       activity.id = uuid();
-      agent.Activities.create(activity).then(() => {
-        setActivities([...activities, activity]);
-        doneCreateOrEdit(activity);
-      })
+      dispatch(createActivityInitiate(activity));
+      doneCreateOrEdit(activity);
     }
   };
 
   const deleteActivityHandler = (activityId: string) => {
-    setIsSubmitting(true);
-    agent.Activities.delete(activityId).then(() => {
-      setActivities([...activities.filter(a => a.id !== activityId)]);
-      setIsSubmitting(false);
-    });
+    dispatch(setLoading(true));
+    dispatch(deleteActivityInitiate(activityId));
+    dispatch(setLoading(false));
   };
 
-  if (isLoading) return <LoadingComponent content="Loading app" />;
+  if (isLoadingActivities || isLoading) return <LoadingComponent content="Loading app" />;
 
   return (
     <Fragment>
@@ -84,8 +86,9 @@ function App() {
       />
       <Container style={{ marginTop: "7em" }}>
         <ActivityDashboard
-          activities={activities}
+          activities={activityList || []}
           selectedActivity={selectedActivity}
+          loadingSelectedActivity={loadingSelectedActivity}
           selectActivityHandler={selectActivityHandler}
           cancelSelectedActivity={cancelSelectedActivity}
           editMode={editMode}
@@ -93,7 +96,7 @@ function App() {
           formClose={formCloseHandler}
           createOrEdit={createOrEditActivityHandler}
           deleteActivityHandler={deleteActivityHandler}
-          isFormSubmitting={isSubmitting}
+          isFormSubmitting={isLoading}
         />
       </Container>
     </Fragment>

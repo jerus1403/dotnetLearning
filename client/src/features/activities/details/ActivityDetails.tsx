@@ -1,8 +1,10 @@
 import { Button, Card, Image } from "semantic-ui-react";
+import { LoadingComponent } from "../../../app/layout/Loading";
 
 import { IActivity } from "../../../app/models";
 
 interface IActivityDetailsProps {
+    isActivityDetailsLoading: boolean;
     activity: IActivity;
     cancelSelectedActivity: () => void;
     formOpen: (id: string) => void;
@@ -13,7 +15,10 @@ export const ActivityDetails = (props: IActivityDetailsProps) => {
         activity,
         cancelSelectedActivity,
         formOpen,
+        isActivityDetailsLoading,
     } = props;
+
+    if (isActivityDetailsLoading) return <LoadingComponent content="Loading" />;
 
     return (
         <Card fluid>
