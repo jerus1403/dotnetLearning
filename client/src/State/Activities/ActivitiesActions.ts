@@ -2,17 +2,17 @@ import { IActivity } from "../../app/models";
 import {
     CreateActivityAction,
     CREATE_ACTIVITY,
-    DeleteActivity,
+    DeleteActivityAction,
     DELETE_ACTIVITY,
     GetActivitiesAction,
     GetSelectedActivityAction,
     GET_ACTIVITIES,
     GET_SELECTED_ACTIVITY,
-    SetEditMode,
-    SetLoading,
-    SET_EDIT_MODE,
+    LoadActivitiesAction,
+    LOAD_ACTIVITIES_INITIAL,
+    SetLoadingAction,
     SET_LOADING,
-    UpdateActivity,
+    UpdateActivityAction,
     UPDATE_ACTIVITY,
 } from "./ActivitiesTypes";
 
@@ -21,7 +21,17 @@ export const getActivities = (activities: IActivity[]): GetActivitiesAction => (
     activities,
 });
 
-export const getSelectedActivity = (selectedActivity: IActivity | undefined): GetSelectedActivityAction => ({
+export const loadActivitiesInitial = (loadingInitial: boolean): LoadActivitiesAction => ({
+    type: LOAD_ACTIVITIES_INITIAL,
+    loadingInitial,
+});
+
+export const setLoading = (loading: boolean): SetLoadingAction => ({
+    type: SET_LOADING,
+    loading,
+});
+
+export const getSelectedActivity = (selectedActivity: IActivity | null): GetSelectedActivityAction => ({
     type: GET_SELECTED_ACTIVITY,
     selectedActivity,
 });
@@ -31,22 +41,12 @@ export const createActivity = (newActivity: IActivity): CreateActivityAction => 
     newActivity,
 });
 
-export const setEditMode = (editMode: boolean): SetEditMode => ({
-    type: SET_EDIT_MODE,
-    editMode,
-});
-
-export const setLoading = (isLoading: boolean): SetLoading => ({
-    type: SET_LOADING,
-    isLoading,
-});
-
-export const updateActivity = (activity: IActivity): UpdateActivity => ({
+export const updateActivity = (activity: IActivity): UpdateActivityAction => ({
     type: UPDATE_ACTIVITY,
     activity,
 })
 
-export const deleteActivity = (removedId: string): DeleteActivity => ({
+export const deleteActivity = (removedId: string): DeleteActivityAction => ({
     type: DELETE_ACTIVITY,
     removedId,
 });

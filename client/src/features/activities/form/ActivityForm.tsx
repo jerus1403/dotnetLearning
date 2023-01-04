@@ -1,43 +1,27 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
 import { IActivity } from "../../../app/models";
 
 interface IActivityFormProps {
-    selectedActivity: IActivity | undefined;
-    formClose: () => void;
-    createOrEdit: (activity: IActivity) => void;
-    isFormSubmitting: boolean;
+    selectedActivity: IActivity;
+    setActivity: (activity: IActivity) => void;
+    submitHandler: () => void;
+    formClose: (id: string) => void;
 }
 
 export const ActivityForm = (props: IActivityFormProps) => {
     const {
         selectedActivity,
         formClose,
-        createOrEdit,
-        isFormSubmitting,
+        setActivity,
+        submitHandler
     } = props;
-
-    const intialActivityState = selectedActivity ?? {
-        id: "",
-        title: "",
-        date: "",
-        description: "",
-        category: "",
-        city: "",
-        venue: "",
-    };
-
-    const [activity, setActivity] = useState(intialActivityState);
-
-    const submitHandler = () => {
-        createOrEdit(activity);
-    };
 
     const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         e.preventDefault();
         const { name, value } = e.target;
         setActivity({
-            ...activity,
+            ...selectedActivity,
             [name]: value,
         });
     };
@@ -50,42 +34,41 @@ export const ActivityForm = (props: IActivityFormProps) => {
                 <Form.Input
                     placeholder={"Title"}
                     name={"title"}
-                    value={activity.title}
+                    value={selectedActivity.title}
                     onChange={inputOnChangeHandler}
                 />
                 <Form.TextArea
                     placeholder={"Description"}
                     name={"description"}
-                    value={activity && activity.description}
+                    value={selectedActivity.description}
                     onChange={inputOnChangeHandler}
                 />
                 <Form.Input
                     placeholder={"Category"}
                     name={"category"}
-                    value={activity && activity.category}
+                    value={selectedActivity.category}
                     onChange={inputOnChangeHandler}
                 />
                 <Form.Input
                     placeholder={"Date"}
                     type={"date"}
                     name={"date"}
-                    value={activity && activity.date}
+                    value={selectedActivity.date}
                     onChange={inputOnChangeHandler}
                 />
                 <Form.Input
                     placeholder={"City"}
                     name={"city"}
-                    value={activity && activity.city}
+                    value={selectedActivity.city}
                     onChange={inputOnChangeHandler}
                 />
                 <Form.Input
                     placeholder={"Venue"}
                     name={"venue"}
-                    value={activity && activity.venue}
+                    value={selectedActivity.venue}
                     onChange={inputOnChangeHandler}
                 />
                 <Button
-                    loading={isFormSubmitting}
                     floated="right"
                     positive
                     type="submit"
@@ -95,7 +78,8 @@ export const ActivityForm = (props: IActivityFormProps) => {
                     floated="right"
                     type="button"
                     content="Cancel"
-                    onClick={formClose}
+                    to
+                    onClick={() => formClose(selectedActivity.id)}
                 />
             </Form>
         </Segment>

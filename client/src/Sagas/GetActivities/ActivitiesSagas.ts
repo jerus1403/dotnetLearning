@@ -1,7 +1,16 @@
-import { put, takeEvery } from "redux-saga/effects";
+import { put, select, takeEvery } from "redux-saga/effects";
+
 import { agent } from "../../app/api/agent";
 import { IActivity } from "../../app/models";
-import { createActivity, deleteActivity, getActivities, updateActivity } from "../../State/Activities/ActivitiesActions";
+import {
+    createActivity,
+    deleteActivity,
+    getActivities,
+    getSelectedActivity,
+    loadActivitiesInitial,
+    setLoading,
+    updateActivity,
+} from "../../State/Activities/ActivitiesActions";
 
 import {
     CreateActivityInitiateAction,
@@ -25,52 +34,73 @@ export function* watchGetActivities() {
 
 function* getActivitiesSaga() {
     try {
+        yield put(loadActivitiesInitial(true));
         const activities: IActivity[] = yield agent.Activities.list();
         const convertedActivities = [...activities].map(a => ({
             ...a,
             date: a.date.split('T')[0],
         })).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+
         yield put(getActivities(convertedActivities));
+        yield put(loadActivitiesInitial(false));
     } catch (err) {
         console.error(err);
+        yield put(loadActivitiesInitial(false));
     }
 }
 
 function* getActivityDetailsSaga(action: GetActivityDetailsInitiateAction) {
     try {
         const { activityId } = action;
+        yield put(setLoading(true));
         const activity: IActivity = yield agent.Activities.details(activityId);
+
+        yield put(getSelectedActivity(activity));
+        yield put(setLoading(false));
     } catch (err) {
         console.error(err);
+        yield put(setLoading(false));
     }
 }
 
 function* createActivitySaga(action: CreateActivityInitiateAction) {
     try {
         const { newActivity } = action;
+        yield put(setLoading(true));
         yield agent.Activities.create(newActivity);
+
         yield put(createActivity(newActivity));
+        yield put(setLoading(false));
     } catch (err) {
         console.error(err);
+        yield put(setLoading(false));
     }
 }
 
 function* updateActivitySaga(action: UpdateActivityInitiateAction) {
     try {
         const { activity } = action;
+        yield put(setLoading(true));
         yield agent.Activities.update(activity);
+
         yield put(updateActivity(activity));
+        yield put(setLoading(false));
     } catch (err) {
         console.error(err);
+        yield put(setLoading(false));
     }
 }
 
 function* deleteActivitySaga(action: DeleteActivityInitiateAction) {
     try {
         const { removedId } = action;
+        yield put(setLoading(true));
         yield agent.Activities.delete(removedId);
+
         yield put(deleteActivity(removedId));
+        yield put(setLoading(false));
     } catch (err) {
         console.error(err);
+        yield put(setLoading(false));
     }
 }

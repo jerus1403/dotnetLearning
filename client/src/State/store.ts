@@ -4,11 +4,13 @@ import createSagaMiddleware from "@redux-saga/core";
 import { activitiesReducer } from "./Activities/ActivitiesReducer";
 import { rootSaga } from "../Sagas/RootSaga";
 import { AddWatchers } from "../StateWatchers/AddWatchers";
+import { userViewReducer } from "./UserView/UserViewReducer";
 
 const sagas = createSagaMiddleware();
 
 export const rootReducer = combineReducers({
     activities: activitiesReducer,
+    userView: userViewReducer,
 });
 
 export const getStore = () => {

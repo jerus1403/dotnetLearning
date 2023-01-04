@@ -2,37 +2,19 @@ import { Grid } from "semantic-ui-react";
 
 //Component imports and etc.
 import { IActivity } from "../../../app/models";
-import { ActivityDetails } from "../details/ActivityDetails";
-import { ActivityForm } from "../form/ActivityForm";
 import { ActivityList } from "./ActivityList";
 
 interface IActivityDashBoardProps {
     activities: IActivity[];
-    selectedActivity: IActivity | undefined;
-    selectActivityHandler: (selectedId: string) => void;
-    cancelSelectedActivity: () => void;
-    formOpen: (id: string) => void;
-    formClose: () => void;
-    editMode: boolean;
-    createOrEdit: (activity: IActivity) => void;
+    goToActivityDetails: (id: string) => void;
     deleteActivityHandler: (deleteId: string) => void;
-    isFormSubmitting: boolean;
-    loadingSelectedActivity: boolean;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
     const {
         activities,
-        selectedActivity,
-        selectActivityHandler,
-        cancelSelectedActivity,
-        formOpen,
-        formClose,
-        editMode,
-        createOrEdit,
+        goToActivityDetails,
         deleteActivityHandler,
-        isFormSubmitting,
-        loadingSelectedActivity,
     } = props;
 
     return (
@@ -40,28 +22,12 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
             <Grid.Column width={'10'}>
                 <ActivityList
                     activities={activities}
-                    selectActivityHandler={selectActivityHandler}
+                    goToActivityDetails={goToActivityDetails}
                     deleteActivityHandler={deleteActivityHandler}
-                    isSubmitting={isFormSubmitting}
                 />
             </Grid.Column>
             <Grid.Column width={'6'}>
-                {selectedActivity && !editMode && (
-                    <ActivityDetails
-                        activity={selectedActivity}
-                        cancelSelectedActivity={cancelSelectedActivity}
-                        formOpen={formOpen}
-                        isActivityDetailsLoading={loadingSelectedActivity}
-                    />
-                )}
-                {editMode && (
-                    <ActivityForm
-                        selectedActivity={selectedActivity}
-                        formClose={formClose}
-                        createOrEdit={createOrEdit}
-                        isFormSubmitting={isFormSubmitting}
-                    />
-                )}
+                <h2>Activity Filters</h2>
             </Grid.Column>
         </Grid>
     );

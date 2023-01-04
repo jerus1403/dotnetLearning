@@ -3,26 +3,26 @@ import { Action } from "@reduxjs/toolkit";
 import {
     CreateActivityAction,
     CREATE_ACTIVITY,
-    DeleteActivity,
+    DeleteActivityAction,
     DELETE_ACTIVITY,
     GetActivitiesAction,
     GetSelectedActivityAction,
     GET_ACTIVITIES,
     GET_SELECTED_ACTIVITY,
     IActivitiesReducerState,
-    SetEditMode,
-    SetLoading,
-    SET_EDIT_MODE,
+    LoadActivitiesAction,
+    LOAD_ACTIVITIES_INITIAL,
+    SetLoadingAction,
     SET_LOADING,
-    UpdateActivity,
+    UpdateActivityAction,
     UPDATE_ACTIVITY,
 } from "./ActivitiesTypes";
 
 const DEFAULT_STATE: IActivitiesReducerState = {
-    activityList: false,
-    selectedActivity: undefined,
-    editMode: false,
-    isLoading: false,
+    activities: [],
+    selectedActivity: null,
+    loading: false,
+    loadingInitial: false,
 }
 
 export const activitiesReducer = (
@@ -34,50 +34,53 @@ export const activitiesReducer = (
             const { activities } = action as GetActivitiesAction;
             return {
                 ...state,
-                activityList: activities,
+                activities: [...state.activities, ...activities],
+            };
+        }
+        case LOAD_ACTIVITIES_INITIAL: {
+            const { loadingInitial } = action as LoadActivitiesAction;
+            return {
+                ...state,
+                loadingInitial,
+            };
+        }
+        case SET_LOADING: {
+            const { loading } = action as SetLoadingAction;
+            return {
+                ...state,
+                loading,
             };
         }
         case GET_SELECTED_ACTIVITY: {
             const { selectedActivity } = action as GetSelectedActivityAction;
             return {
                 ...state,
-                selectedActivity,
-            }
+                selectedActivity: selectedActivity,
+            };
         }
         case CREATE_ACTIVITY: {
             const { newActivity } = action as CreateActivityAction;
             return {
                 ...state,
-                activityList: [...(state.activityList || []), newActivity],
-                selectedActivity: newActivity,
-            }
+                activities: [...state.activities, newActivity],
+            };
         }
-        case SET_EDIT_MODE:
-            const { editMode } = action as SetEditMode;
+        case UPDATE_ACTIVITY: {
+            const { activity } = action as UpdateActivityAction;
+            const updatedActivities = [...state.activities.filter(a => a.id !== activity.id), activity];
             return {
                 ...state,
-                editMode,
-            }
-        case SET_LOADING:
-            const { isLoading } = action as SetLoading;
+                activities: updatedActivities,
+            };
+        }
+        case DELETE_ACTIVITY: {
+            const { removedId } = action as DeleteActivityAction;
+            const updatedActivities = [...state.activities.filter(a => a.id !== removedId)];
             return {
                 ...state,
-                isLoading,
-            }
-        case UPDATE_ACTIVITY:
-            const { activity } = action as UpdateActivity;
-            const updatedActivityList = [...(state.activityList || []).filter(a => a.id !== activity.id), activity];
-            return {
-                ...state,
-                activityList: updatedActivityList,
-            }
-        case DELETE_ACTIVITY:
-            const { removedId } = action as DeleteActivity;
-            const updatedActivities = [...(state.activityList || []).filter(a => a.id !== removedId)];
-            return {
-                ...state,
-                activityList: updatedActivities,
-            }
+                activities: updatedActivities,
+            };
+        }
         default:
             return state;
     }

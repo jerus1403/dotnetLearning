@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 
 //Component Imports and etc.
@@ -6,22 +7,18 @@ import { IActivity } from "../../../app/models";
 
 interface IActivityListProps {
     activities: IActivity[];
-    selectActivityHandler: (selectedId: string) => void;
+    goToActivityDetails: (id: string) => void;
     deleteActivityHandler: (deleteId: string) => void;
-    isSubmitting: boolean;
 }
 
 export const ActivityList = (props: IActivityListProps) => {
     const {
         activities,
-        selectActivityHandler,
         deleteActivityHandler,
-        isSubmitting,
+        goToActivityDetails,
     } = props;
-    const [deleteTarget, setDeleteTarget] = useState('');
 
     const deleteTargetHandler = (e: SyntheticEvent<HTMLButtonElement>, activityId: string) => {
-        setDeleteTarget(e.currentTarget.name);
         deleteActivityHandler(activityId);
     };
 
@@ -42,11 +39,12 @@ export const ActivityList = (props: IActivityListProps) => {
                                     floated="right"
                                     content="View"
                                     color="blue"
-                                    onClick={() => selectActivityHandler(activity.id)}
+                                    as={Link}
+                                    onClick={() => goToActivityDetails(activity.id)}
+                                    to={`/activities/${activity.id}`}
                                 />
                                 <Button
                                     name={activity.id}
-                                    loading={isSubmitting && deleteTarget === activity.id}
                                     floated="right"
                                     content="Delete"
                                     color="red"

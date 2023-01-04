@@ -1,103 +1,96 @@
 import { Fragment } from 'react';
 import { Container } from 'semantic-ui-react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import './style.css';
-import { IActivity } from '../models/activity';
 import { NavBar } from './NavBar';
-import { ActivityDashboard } from '../../features';
-import { LoadingComponent } from './Loading';
-import {
-  activitiesSelector,
-  selectedActivitySelector,
-  loadingActivitiesSelector,
-  loadingSelectedActivitySelector,
-  editModeSelector,
-  loadingSelector,
-} from '../../State/Activities/ActivitiesSelector';
-import { useDispatch, useSelector } from 'react-redux';
-import { getSelectedActivity, setEditMode, setLoading } from '../../State/Activities/ActivitiesActions';
+import { useDispatch } from 'react-redux';
+import { getSelectedActivity } from '../../State/Activities/ActivitiesActions';
+import { HomePage } from '../../features/home/HomePage';
+import { ActivityPage } from '../../features/activities/ActivityPage';
 import {
   createActivityInitiate,
-  deleteActivityInitiate,
+  getActivityDetailsInitiate,
   updateActivityInitiate,
 } from '../../Sagas/GetActivities/ActivitiesActions';
+import { IActivity } from '../models';
+import { CreateActivityPage } from '../../features/activities/CreateActivityPage';
+import { ActivityDetailsPage } from '../../features/activities/ActivityDetailsPage';
 
 function App() {
+  const location = useLocation();
   const dispatch = useDispatch();
-
-  const activityList = useSelector(activitiesSelector);
-  const isLoadingActivities = useSelector(loadingActivitiesSelector);
-  const selectedActivity = useSelector(selectedActivitySelector);
-  const loadingSelectedActivity = useSelector(loadingSelectedActivitySelector);
-  const editMode = useSelector(editModeSelector);
-  const isLoading = useSelector(loadingSelector);
-
-  const selectActivityHandler = (selectedId: string) => {
-    const foundSelectedActivity = activityList && activityList?.find(a => a.id === selectedId);
-    if (foundSelectedActivity) {
-      dispatch(getSelectedActivity(foundSelectedActivity));
-    }
-  };
+  const navigate = useNavigate();
 
   const cancelSelectedActivity = () => {
-    dispatch(getSelectedActivity(undefined));
-  };
-
-  const formOpenHandler = (id?: string) => {
-    id ? selectActivityHandler(id) : cancelSelectedActivity();
-    dispatch(setEditMode(true));
-  };
-
-  const formCloseHandler = () => {
-    dispatch(setEditMode(false));
+    dispatch(getSelectedActivity(null));
   };
 
   const doneCreateOrEdit = (activity: IActivity) => {
     dispatch(getSelectedActivity(activity));
-    dispatch(setEditMode(false));
-    dispatch(setLoading(false));
   };
 
   const createOrEditActivityHandler = (activity: IActivity) => {
-    dispatch(setLoading(true));
     if (activity.id) {
       dispatch(updateActivityInitiate(activity));
+      navigate(`/activities/${activity.id}`);
       doneCreateOrEdit(activity);
     } else {
       activity.id = uuid();
       dispatch(createActivityInitiate(activity));
+      navigate(`/activities/${activity.id}`);
       doneCreateOrEdit(activity);
     }
   };
 
-  const deleteActivityHandler = (activityId: string) => {
-    dispatch(setLoading(true));
-    dispatch(deleteActivityInitiate(activityId));
-    dispatch(setLoading(false));
+  const formCloseHandler = (id: string) => {
+    navigate(`/activities/${id}`);
   };
 
-  if (isLoadingActivities || isLoading) return <LoadingComponent content="Loading app" />;
+  const formOpenHandler = (id: string) => {
+    dispatch(getActivityDetailsInitiate(id));
+  };
 
   return (
     <Fragment>
       <NavBar
-        formOpen={formOpenHandler}
+        formOpen={cancelSelectedActivity}
       />
       <Container style={{ marginTop: "7em" }}>
-        <ActivityDashboard
-          activities={activityList || []}
-          selectedActivity={selectedActivity}
-          loadingSelectedActivity={loadingSelectedActivity}
-          selectActivityHandler={selectActivityHandler}
-          cancelSelectedActivity={cancelSelectedActivity}
-          editMode={editMode}
-          formOpen={formOpenHandler}
-          formClose={formCloseHandler}
-          createOrEdit={createOrEditActivityHandler}
-          deleteActivityHandler={deleteActivityHandler}
-          isFormSubmitting={isLoading}
-        />
+        <Routes>
+          <Route
+            path='/'
+            element={<HomePage />}
+          />
+          <Route
+            path='/activities'
+            element={
+              <ActivityPage />
+            }
+          />
+          <Route
+            path='/activities/:id'
+            element={
+              <ActivityDetailsPage
+                cancelSelectedActivity={cancelSelectedActivity}
+                formOpenHandler={formOpenHandler}
+              />
+            }
+          />
+          {['/createActivity', '/edit/:id'].map((path: string, idx: number) => (
+            <Route
+              key={location.key}
+              path={path}
+              element={
+                <CreateActivityPage
+                  formCloseHandler={formCloseHandler}
+                  createOrEditActivityHandler={createOrEditActivityHandler}
+                />
+              }
+            />
+          ))}
+        </Routes>
       </Container>
     </Fragment>
   );
