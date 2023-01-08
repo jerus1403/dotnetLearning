@@ -8,6 +8,7 @@ interface IActivityDashBoardProps {
     activities: IActivity[];
     goToActivityDetails: (id: string) => void;
     deleteActivityHandler: (deleteId: string) => void;
+    loading: boolean;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
@@ -15,6 +16,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
         activities,
         goToActivityDetails,
         deleteActivityHandler,
+        loading,
     } = props;
 
     return (
@@ -24,6 +26,7 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
                     activities={activities}
                     goToActivityDetails={goToActivityDetails}
                     deleteActivityHandler={deleteActivityHandler}
+                    loading={loading}
                 />
             </Grid.Column>
             <Grid.Column width={'6'}>

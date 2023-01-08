@@ -9,6 +9,7 @@ interface IActivityListProps {
     activities: IActivity[];
     goToActivityDetails: (id: string) => void;
     deleteActivityHandler: (deleteId: string) => void;
+    loading: boolean;
 }
 
 export const ActivityList = (props: IActivityListProps) => {
@@ -16,6 +17,7 @@ export const ActivityList = (props: IActivityListProps) => {
         activities,
         deleteActivityHandler,
         goToActivityDetails,
+        loading,
     } = props;
 
     const deleteTargetHandler = (e: SyntheticEvent<HTMLButtonElement>, activityId: string) => {
@@ -44,6 +46,7 @@ export const ActivityList = (props: IActivityListProps) => {
                                     to={`/activities/${activity.id}`}
                                 />
                                 <Button
+                                    loading={loading}
                                     name={activity.id}
                                     floated="right"
                                     content="Delete"

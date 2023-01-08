@@ -7,6 +7,7 @@ interface IActivityFormProps {
     setActivity: (activity: IActivity) => void;
     submitHandler: () => void;
     formClose: (id: string) => void;
+    loadingSubmission: boolean;
 }
 
 export const ActivityForm = (props: IActivityFormProps) => {
@@ -14,7 +15,8 @@ export const ActivityForm = (props: IActivityFormProps) => {
         selectedActivity,
         formClose,
         setActivity,
-        submitHandler
+        submitHandler,
+        loadingSubmission,
     } = props;
 
     const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -29,6 +31,7 @@ export const ActivityForm = (props: IActivityFormProps) => {
     return (
         <Segment clearing>
             <Form
+                autoComplete='off'
                 onSubmit={submitHandler}
             >
                 <Form.Input
@@ -69,6 +72,7 @@ export const ActivityForm = (props: IActivityFormProps) => {
                     onChange={inputOnChangeHandler}
                 />
                 <Button
+                    loading={loadingSubmission}
                     floated="right"
                     positive
                     type="submit"
@@ -78,7 +82,6 @@ export const ActivityForm = (props: IActivityFormProps) => {
                     floated="right"
                     type="button"
                     content="Cancel"
-                    to
                     onClick={() => formClose(selectedActivity.id)}
                 />
             </Form>

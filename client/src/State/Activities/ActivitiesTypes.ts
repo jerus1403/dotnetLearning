@@ -10,6 +10,7 @@ export interface IActivitiesReducerState {
     selectedActivity: IActivity | null;
     loading: boolean;
     loadingInitial: boolean;
+    loadingSelectedActivity: boolean;
 }
 
 export type GetActivitiesAction = Action<string> & {
@@ -22,7 +23,11 @@ export type LoadActivitiesAction = Action<string> & {
 
 export type SetLoadingAction = Action<string> & {
     loading: boolean;
-}
+};
+
+export type SetLoadingSelectedActivityAction = Action<string> & {
+    loadingSelectedActivity: boolean;
+};
 
 export type GetSelectedActivityAction = Action<string> & {
     selectedActivity: IActivity | null;
@@ -43,6 +48,7 @@ export type DeleteActivityAction = Action<string> & {
 export const GET_ACTIVITIES = "GET_ACTIVITIES";
 export const LOAD_ACTIVITIES_INITIAL = "LOAD_ACTIVITIES_INITIAL";
 export const SET_LOADING = "SET_LOADING";
+export const SET_LOADING_SELECTED_ACTIVITY = "SET_LOADING_SELECTED_ACTIVITY";
 export const GET_SELECTED_ACTIVITY = "GET_SELECTED_ACTIVITY";
 export const CREATE_ACTIVITY = "CREATE_ACTIVITY";
 export const UPDATE_ACTIVITY = "UPDATE_ACTIVITY";

@@ -17,6 +17,7 @@ import {
 import { IActivity } from '../models';
 import { CreateActivityPage } from '../../features/activities/CreateActivityPage';
 import { ActivityDetailsPage } from '../../features/activities/ActivityDetailsPage';
+import { loadingSelector } from '../../State/Activities/ActivitiesSelector';
 
 function App() {
   const location = useLocation();
@@ -31,16 +32,22 @@ function App() {
     dispatch(getSelectedActivity(activity));
   };
 
+  const setTimeoutBeforeNavigate = (activityId: string) => {
+    setTimeout(() => {
+      navigate(`/activities/${activityId}`);
+    }, 500);
+  };
+
   const createOrEditActivityHandler = (activity: IActivity) => {
     if (activity.id) {
       dispatch(updateActivityInitiate(activity));
-      navigate(`/activities/${activity.id}`);
       doneCreateOrEdit(activity);
+      setTimeoutBeforeNavigate(activity.id);
     } else {
       activity.id = uuid();
       dispatch(createActivityInitiate(activity));
-      navigate(`/activities/${activity.id}`);
       doneCreateOrEdit(activity);
+      setTimeoutBeforeNavigate(activity.id);
     }
   };
 
@@ -54,44 +61,51 @@ function App() {
 
   return (
     <Fragment>
-      <NavBar
-        formOpen={cancelSelectedActivity}
-      />
-      <Container style={{ marginTop: "7em" }}>
-        <Routes>
-          <Route
-            path='/'
-            element={<HomePage />}
-          />
-          <Route
-            path='/activities'
-            element={
-              <ActivityPage />
-            }
-          />
-          <Route
-            path='/activities/:id'
-            element={
-              <ActivityDetailsPage
-                cancelSelectedActivity={cancelSelectedActivity}
-                formOpenHandler={formOpenHandler}
-              />
-            }
-          />
-          {['/createActivity', '/edit/:id'].map((path: string, idx: number) => (
-            <Route
-              key={location.key}
-              path={path}
-              element={
-                <CreateActivityPage
-                  formCloseHandler={formCloseHandler}
-                  createOrEditActivityHandler={createOrEditActivityHandler}
-                />
-              }
+      {location.pathname === "/"
+        ? <HomePage />
+        : (
+          <>
+            <NavBar
+              formOpen={cancelSelectedActivity}
             />
-          ))}
-        </Routes>
-      </Container>
+            <Container style={{ marginTop: "7em" }}>
+              <Routes>
+                <Route
+                  path='/'
+                  element={<HomePage />}
+                />
+                <Route
+                  path='/activities'
+                  element={
+                    <ActivityPage />
+                  }
+                />
+                <Route
+                  path='/activities/:id'
+                  element={
+                    <ActivityDetailsPage
+                      cancelSelectedActivity={cancelSelectedActivity}
+                      formOpenHandler={formOpenHandler}
+                    />
+                  }
+                />
+                {['/createActivity', '/edit/:id'].map((path: string, idx: number) => (
+                  <Route
+                    key={location.key}
+                    path={path}
+                    element={
+                      <CreateActivityPage
+                        formCloseHandler={formCloseHandler}
+                        createOrEditActivityHandler={createOrEditActivityHandler}
+                      />
+                    }
+                  />
+                ))}
+              </Routes>
+            </Container>
+          </>
+        )
+      }
     </Fragment>
   );
 };

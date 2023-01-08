@@ -11,8 +11,10 @@ import {
     GET_SELECTED_ACTIVITY,
     IActivitiesReducerState,
     LoadActivitiesAction,
+    SET_LOADING_SELECTED_ACTIVITY,
     LOAD_ACTIVITIES_INITIAL,
     SetLoadingAction,
+    SetLoadingSelectedActivityAction,
     SET_LOADING,
     UpdateActivityAction,
     UPDATE_ACTIVITY,
@@ -23,6 +25,7 @@ const DEFAULT_STATE: IActivitiesReducerState = {
     selectedActivity: null,
     loading: false,
     loadingInitial: false,
+    loadingSelectedActivity: false,
 }
 
 export const activitiesReducer = (
@@ -49,6 +52,13 @@ export const activitiesReducer = (
             return {
                 ...state,
                 loading,
+            };
+        }
+        case SET_LOADING_SELECTED_ACTIVITY: {
+            const { loadingSelectedActivity } = action as SetLoadingSelectedActivityAction;
+            return {
+                ...state,
+                loadingSelectedActivity,
             };
         }
         case GET_SELECTED_ACTIVITY: {

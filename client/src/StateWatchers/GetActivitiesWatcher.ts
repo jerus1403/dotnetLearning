@@ -14,7 +14,7 @@ export const getActivitiesWatcher = (store: StoreType): void => {
         if (activityList.length === 0 && !loading) {
             loading = true;
             store.dispatch(getActivitiesInitiate());
-        } else if (activityList && subscription) {
+        } else if (activityList.length > 0 && subscription) {
             subscription();
         }
     };
@@ -31,7 +31,7 @@ export const getSelectedActivityWatcher = (store: StoreType): void => {
         const state = store.getState();
         const selectedActivity = selectedActivitySelector(state);
 
-        if (!selectedActivity && !loading) {
+        if (!selectedActivity && !loading && paramId) {
             loading = true;
             store.dispatch(getActivityDetailsInitiate(paramId));
         } else if (selectedActivity && subscription) {

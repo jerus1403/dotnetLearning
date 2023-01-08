@@ -9,6 +9,7 @@ import {
     getSelectedActivity,
     loadActivitiesInitial,
     setLoading,
+    setLoadingSelectedActivity,
     updateActivity,
 } from "../../State/Activities/ActivitiesActions";
 
@@ -52,14 +53,19 @@ function* getActivitiesSaga() {
 function* getActivityDetailsSaga(action: GetActivityDetailsInitiateAction) {
     try {
         const { activityId } = action;
-        yield put(setLoading(true));
-        const activity: IActivity = yield agent.Activities.details(activityId);
+        yield put(setLoadingSelectedActivity(true));
 
-        yield put(getSelectedActivity(activity));
-        yield put(setLoading(false));
+        const activity: IActivity = yield agent.Activities.details(activityId);
+        const convertedActivity = {
+            ...activity,
+            date: activity.date.split('T')[0],
+        };
+
+        yield put(getSelectedActivity(convertedActivity));
+        yield put(setLoadingSelectedActivity(false));
     } catch (err) {
         console.error(err);
-        yield put(setLoading(false));
+        yield put(setLoadingSelectedActivity(false));
     }
 }
 

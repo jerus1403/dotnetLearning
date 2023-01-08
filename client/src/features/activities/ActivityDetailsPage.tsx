@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 
 import { LoadingComponent } from "../../app/layout/Loading";
 import {
-    loadingSelector,
+    loadingSelectedActivitySelector,
     selectedActivitySelector,
 } from "../../State/Activities/ActivitiesSelector";
 import { ActivityDetails } from "./details/ActivityDetails";
@@ -19,9 +19,9 @@ export const ActivityDetailsPage = (props: IActivityDetailsPageProps) => {
     } = props;
 
     const selectedActivity = useSelector(selectedActivitySelector);
-    const loading = useSelector(loadingSelector);
+    const loadingSelectedActivity = useSelector(loadingSelectedActivitySelector);
 
-    if (loading) {
+    if (loadingSelectedActivity) {
         return <LoadingComponent content="Loading..." />;
     }
 

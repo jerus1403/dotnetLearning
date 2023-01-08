@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
+import { LoadingComponent } from "../../app/layout/Loading";
 import { IActivity } from "../../app/models";
 import {
+    loadingSelectedActivitySelector,
     loadingSelector,
     selectedActivitySelector,
 } from "../../State/Activities/ActivitiesSelector";
@@ -21,6 +23,7 @@ export const CreateActivityPage = (props: ICreateActivityPageProps) => {
     } = props;
 
     const selectedActivity = useSelector(selectedActivitySelector);
+    const loadingSelectedActivity = useSelector(loadingSelectedActivitySelector);
     const loading = useSelector(loadingSelector);
 
     const [activity, setActivity] = useState({
@@ -43,8 +46,10 @@ export const CreateActivityPage = (props: ICreateActivityPageProps) => {
         createOrEditActivityHandler(activity);
     };
 
+    if (loadingSelectedActivity) return <LoadingComponent content="Loading app" />;
     return (
         <ActivityForm
+            loadingSubmission={loading}
             submitHandler={submitHandler}
             setActivity={setActivity}
             selectedActivity={activity}

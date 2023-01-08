@@ -16,6 +16,11 @@ export const loadingSelector = createSelector(
     (loading) => loading,
 );
 
+export const loadingSelectedActivitySelector = createSelector(
+    (root: RootState) => root.activities.loadingSelectedActivity,
+    (loadingSelectedActivity) => loadingSelectedActivity,
+);
+
 export const selectedActivitySelector = createSelector(
     (root: RootState) => root.activities.selectedActivity,
     (selectedActivity) => selectedActivity,

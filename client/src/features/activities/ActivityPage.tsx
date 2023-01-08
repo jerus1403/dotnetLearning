@@ -32,6 +32,7 @@ export const ActivityPage = () => {
     return (
         <Container style={{ marginTop: "7em" }}>
             <ActivityDashboard
+                loading={loading}
                 activities={activities}
                 goToActivityDetails={goToActivityDetails}
                 deleteActivityHandler={deleteActivityHandler}
