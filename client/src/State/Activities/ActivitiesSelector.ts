@@ -2,8 +2,8 @@ import { createSelector } from "reselect";
 import { RootState } from "../store";
 
 export const activitiesSelector = createSelector(
-    (root: RootState) => root.activities.activities,
-    (activities) => activities,
+    (root: RootState) => root.activities.activityGroups,
+    (activityGroups) => activityGroups,
 );
 
 export const loadingActivitiesInitialSelector = createSelector(

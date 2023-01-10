@@ -11,16 +11,17 @@ import {
     deleteActivityInitiate, getActivityDetailsInitiate,
 } from '../../Sagas/GetActivities/ActivitiesActions';
 import { LoadingComponent } from "../../app/layout/Loading";
+import { IActivity } from "../../app/models";
 
 export const ActivityPage = () => {
     const dispatch = useDispatch();
 
     const loadingActivitiesIntial = useSelector(loadingActivitiesInitialSelector);
-    const activities = useSelector(activitiesSelector);
+    const activityGroups = useSelector(activitiesSelector);
     const loading = useSelector(loadingSelector);
 
-    const deleteActivityHandler = (activityId: string) => {
-        dispatch(deleteActivityInitiate(activityId));
+    const deleteActivityHandler = (deleteActivity: IActivity) => {
+        dispatch(deleteActivityInitiate(deleteActivity));
     };
 
     const goToActivityDetails = (id: string) => {
@@ -33,7 +34,7 @@ export const ActivityPage = () => {
         <Container style={{ marginTop: "7em" }}>
             <ActivityDashboard
                 loading={loading}
-                activities={activities}
+                activityGroups={activityGroups}
                 goToActivityDetails={goToActivityDetails}
                 deleteActivityHandler={deleteActivityHandler}
             />

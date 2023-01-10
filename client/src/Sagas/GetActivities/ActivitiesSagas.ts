@@ -1,7 +1,8 @@
-import { put, select, takeEvery } from "redux-saga/effects";
+import { put, takeEvery } from "redux-saga/effects";
 
 import { agent } from "../../app/api/agent";
 import { IActivity } from "../../app/models";
+import { IActivityGroup } from "../../app/models/activity";
 import {
     createActivity,
     deleteActivity,
@@ -42,7 +43,21 @@ function* getActivitiesSaga() {
             date: a.date.split('T')[0],
         })).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
 
-        yield put(getActivities(convertedActivities));
+        const activitiesByDateGroup = convertedActivities.reduce((activities, activity) => {
+            const date = activity.date;
+            activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+            return activities;
+        }, {} as { [key: string]: IActivity[] });
+
+        const activitiesGroupedByDate: IActivityGroup[] = [];
+        for (const key in activitiesByDateGroup) {
+            activitiesGroupedByDate.push({
+                date: key,
+                activities: activitiesByDateGroup[key],
+            });
+        };
+
+        yield put(getActivities(activitiesGroupedByDate));
         yield put(loadActivitiesInitial(false));
     } catch (err) {
         console.error(err);
@@ -99,11 +114,11 @@ function* updateActivitySaga(action: UpdateActivityInitiateAction) {
 
 function* deleteActivitySaga(action: DeleteActivityInitiateAction) {
     try {
-        const { removedId } = action;
+        const { removeActivity } = action;
         yield put(setLoading(true));
-        yield agent.Activities.delete(removedId);
+        yield agent.Activities.delete(removeActivity.id);
 
-        yield put(deleteActivity(removedId));
+        yield put(deleteActivity(removeActivity));
         yield put(setLoading(false));
     } catch (err) {
         console.error(err);

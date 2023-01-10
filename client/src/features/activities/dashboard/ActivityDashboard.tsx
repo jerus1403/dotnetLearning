@@ -1,19 +1,20 @@
 import { Grid } from "semantic-ui-react";
 
 //Component imports and etc.
-import { IActivity } from "../../../app/models";
+import { IActivity, IActivityGroup } from "../../../app/models";
+import { ActivityFilters } from "./ActivityFilters";
 import { ActivityList } from "./ActivityList";
 
 interface IActivityDashBoardProps {
-    activities: IActivity[];
+    activityGroups: IActivityGroup[];
     goToActivityDetails: (id: string) => void;
-    deleteActivityHandler: (deleteId: string) => void;
+    deleteActivityHandler: (deleteActivity: IActivity) => void;
     loading: boolean;
 }
 
 export const ActivityDashboard = (props: IActivityDashBoardProps) => {
     const {
-        activities,
+        activityGroups,
         goToActivityDetails,
         deleteActivityHandler,
         loading,
@@ -23,14 +24,14 @@ export const ActivityDashboard = (props: IActivityDashBoardProps) => {
         <Grid>
             <Grid.Column width={'10'}>
                 <ActivityList
-                    activities={activities}
+                    activityGroups={activityGroups}
                     goToActivityDetails={goToActivityDetails}
                     deleteActivityHandler={deleteActivityHandler}
                     loading={loading}
                 />
             </Grid.Column>
             <Grid.Column width={'6'}>
-                <h2>Activity Filters</h2>
+                <ActivityFilters />
             </Grid.Column>
         </Grid>
     );

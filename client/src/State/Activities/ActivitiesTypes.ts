@@ -1,12 +1,9 @@
 import { Action } from "@reduxjs/toolkit";
-import {
-    Map as ImmmutableMap,
-} from "immutable";
 
-import { IActivity } from "../../app/models";
+import { IActivity, IActivityGroup } from "../../app/models";
 
 export interface IActivitiesReducerState {
-    activities: IActivity[];
+    activityGroups: IActivityGroup[];
     selectedActivity: IActivity | null;
     loading: boolean;
     loadingInitial: boolean;
@@ -14,7 +11,7 @@ export interface IActivitiesReducerState {
 }
 
 export type GetActivitiesAction = Action<string> & {
-    activities: IActivity[];
+    activityGroups: IActivityGroup[];
 };
 
 export type LoadActivitiesAction = Action<string> & {
@@ -42,7 +39,7 @@ export type UpdateActivityAction = Action<string> & {
 };
 
 export type DeleteActivityAction = Action<string> & {
-    removedId: string;
+    removeActivity: IActivity;
 };
 
 export const GET_ACTIVITIES = "GET_ACTIVITIES";

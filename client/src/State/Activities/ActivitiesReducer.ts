@@ -21,7 +21,7 @@ import {
 } from "./ActivitiesTypes";
 
 const DEFAULT_STATE: IActivitiesReducerState = {
-    activities: [],
+    activityGroups: [],
     selectedActivity: null,
     loading: false,
     loadingInitial: false,
@@ -34,10 +34,10 @@ export const activitiesReducer = (
 ) => {
     switch (action.type) {
         case GET_ACTIVITIES: {
-            const { activities } = action as GetActivitiesAction;
+            const { activityGroups } = action as GetActivitiesAction;
             return {
                 ...state,
-                activities: [...state.activities, ...activities],
+                activityGroups: [...state.activityGroups, ...activityGroups],
             };
         }
         case LOAD_ACTIVITIES_INITIAL: {
@@ -70,25 +70,46 @@ export const activitiesReducer = (
         }
         case CREATE_ACTIVITY: {
             const { newActivity } = action as CreateActivityAction;
+            let updatedActivityGroups = [...state.activityGroups];
+            updatedActivityGroups.forEach(item => {
+                if (item.date === newActivity.date) {
+                    item.activities.push(newActivity);
+                } else {
+                    updatedActivityGroups.push({
+                        date: newActivity.date,
+                        activities: [newActivity],
+                    });
+                };
+            });
             return {
                 ...state,
-                activities: [...state.activities, newActivity],
+                activityGroups: updatedActivityGroups,
             };
         }
         case UPDATE_ACTIVITY: {
             const { activity } = action as UpdateActivityAction;
-            const updatedActivities = [...state.activities.filter(a => a.id !== activity.id), activity];
+            const updatedActivityGroups = [...state.activityGroups].map(item => {
+                if (item.date === activity.date) {
+                    return item.activities = [...item.activities.filter(a => a.id !== activity.id), activity];
+                }
+                return item;
+            });
             return {
                 ...state,
-                activities: updatedActivities,
+                activities: updatedActivityGroups,
             };
         }
         case DELETE_ACTIVITY: {
-            const { removedId } = action as DeleteActivityAction;
-            const updatedActivities = [...state.activities.filter(a => a.id !== removedId)];
+            const { removeActivity } = action as DeleteActivityAction;
+            const updatedActivityGroups = [...state.activityGroups].map(item => {
+                if (item.date === removeActivity.date) {
+                    return item.activities = [...item.activities.filter(a => a.id !== removeActivity.id)];
+                }
+                return item;
+            });
             return {
                 ...state,
-                activities: updatedActivities,
+                activities: updatedActivityGroups,
             };
         }
         default:

@@ -1,67 +1,44 @@
-import { SyntheticEvent, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Item, Label, Segment } from "semantic-ui-react";
+
+import { Fragment } from "react";
+import { Header } from "semantic-ui-react";
 
 //Component Imports and etc.
-import { IActivity } from "../../../app/models";
+import { IActivity, IActivityGroup } from "../../../app/models";
+import { ActivityListItem } from "./ActivityListItem";
 
 interface IActivityListProps {
-    activities: IActivity[];
+    activityGroups: IActivityGroup[];
     goToActivityDetails: (id: string) => void;
-    deleteActivityHandler: (deleteId: string) => void;
+    deleteActivityHandler: (deleteActivity: IActivity) => void;
     loading: boolean;
 }
 
 export const ActivityList = (props: IActivityListProps) => {
     const {
-        activities,
+        activityGroups,
         deleteActivityHandler,
         goToActivityDetails,
         loading,
     } = props;
 
-    const deleteTargetHandler = (e: SyntheticEvent<HTMLButtonElement>, activityId: string) => {
-        deleteActivityHandler(activityId);
-    };
-
     return (
-        <Segment>
-            <Item.Group divided>
-                {activities.map((activity) => (
-                    <Item key={activity.id}>
-                        <Item.Content>
-                            <Item.Header as={"a"}>{activity.title}</Item.Header>
-                            <Item.Meta>{activity.date}</Item.Meta>
-                            <Item.Description>
-                                <div>{activity.description}</div>
-                                <div>{activity.city}, {activity.venue}</div>
-                            </Item.Description>
-                            <Item.Extra>
-                                <Button
-                                    floated="right"
-                                    content="View"
-                                    color="blue"
-                                    as={Link}
-                                    onClick={() => goToActivityDetails(activity.id)}
-                                    to={`/activities/${activity.id}`}
-                                />
-                                <Button
-                                    loading={loading}
-                                    name={activity.id}
-                                    floated="right"
-                                    content="Delete"
-                                    color="red"
-                                    onClick={(e: SyntheticEvent<HTMLButtonElement>) => deleteTargetHandler(e, activity.id)}
-                                />
-                                <Label
-                                    basic
-                                    content={activity.category}
-                                />
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>
-                ))}
-            </Item.Group>
-        </Segment>
+        <>
+            {activityGroups.map(g => (
+                <Fragment key={g.date}>
+                    <Header sub color='teal'>
+                        {g.date}
+                    </Header>
+                    {g.activities.map((activity) => (
+                        <ActivityListItem
+                            key={activity.id}
+                            activity={activity}
+                            goToActivityDetails={goToActivityDetails}
+                            deleteActivityHandler={deleteActivityHandler}
+                            loading={loading}
+                        />
+                    ))}
+                </Fragment>
+            ))}
+        </>
     );
 };

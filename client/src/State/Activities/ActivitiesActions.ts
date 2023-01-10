@@ -1,4 +1,4 @@
-import { IActivity } from "../../app/models";
+import { IActivity, IActivityGroup } from "../../app/models";
 import {
     CreateActivityAction,
     CREATE_ACTIVITY,
@@ -18,9 +18,9 @@ import {
     UPDATE_ACTIVITY,
 } from "./ActivitiesTypes";
 
-export const getActivities = (activities: IActivity[]): GetActivitiesAction => ({
+export const getActivities = (activityGroups: IActivityGroup[]): GetActivitiesAction => ({
     type: GET_ACTIVITIES,
-    activities,
+    activityGroups,
 });
 
 export const loadActivitiesInitial = (loadingInitial: boolean): LoadActivitiesAction => ({
@@ -53,7 +53,7 @@ export const updateActivity = (activity: IActivity): UpdateActivityAction => ({
     activity,
 });
 
-export const deleteActivity = (removedId: string): DeleteActivityAction => ({
+export const deleteActivity = (removeActivity: IActivity): DeleteActivityAction => ({
     type: DELETE_ACTIVITY,
-    removedId,
+    removeActivity,
 });

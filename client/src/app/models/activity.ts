@@ -7,3 +7,8 @@ export interface IActivity {
     city: string;
     venue: string;
 }
+
+export interface IActivityGroup {
+    date: string;
+    activities: IActivity[];
+};

@@ -1,1 +1,1 @@
-export { IActivity } from "./activity";
+export { IActivity, IActivityGroup } from "./activity";

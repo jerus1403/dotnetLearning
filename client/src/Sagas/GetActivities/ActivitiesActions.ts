@@ -32,7 +32,7 @@ export const updateActivityInitiate = (activity: IActivity): UpdateActivityIniti
     activity,
 });
 
-export const deleteActivityInitiate = (removedId: string): DeleteActivityInitiateAction => ({
+export const deleteActivityInitiate = (removeActivity: IActivity): DeleteActivityInitiateAction => ({
     type: DELETE_ACTIVITY_INITIATE,
-    removedId,
+    removeActivity,
 });

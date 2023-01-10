@@ -17,7 +17,6 @@ import {
 import { IActivity } from '../models';
 import { CreateActivityPage } from '../../features/activities/CreateActivityPage';
 import { ActivityDetailsPage } from '../../features/activities/ActivityDetailsPage';
-import { loadingSelector } from '../../State/Activities/ActivitiesSelector';
 
 function App() {
   const location = useLocation();

@@ -12,7 +12,7 @@ export type UpdateActivityInitiateAction = Action<string> & {
     activity: IActivity;
 };
 export type DeleteActivityInitiateAction = Action<string> & {
-    removedId: string;
+    removeActivity: IActivity;
 };
 
 export const GET_ACTIVITIES_INITIATE = "SAGAS/GET_ACTIVITIES_INITIATE";
