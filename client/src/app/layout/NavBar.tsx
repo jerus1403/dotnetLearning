@@ -38,6 +38,11 @@ export const NavBar = (props: INavBarProps) => {
                     to="/activities"
                 />
                 <Menu.Item
+                    name="Errors"
+                    as={NavLink}
+                    to="/errors"
+                />
+                <Menu.Item
                     as={NavLink}
                     to="/createActivity"
                 >

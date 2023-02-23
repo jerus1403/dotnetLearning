@@ -1,16 +1,19 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "@redux-saga/core";
 
-import { activitiesReducer } from "./Activities/ActivitiesReducer";
 import { rootSaga } from "../Sagas/RootSaga";
 import { AddWatchers } from "../StateWatchers/AddWatchers";
+//Reducers
 import { userViewReducer } from "./UserView/UserViewReducer";
+import { activitiesReducer } from "./Activities/ActivitiesReducer";
+import { commonReducer } from "./CommonStore/CommonReducer";
 
 const sagas = createSagaMiddleware();
 
 export const rootReducer = combineReducers({
     activities: activitiesReducer,
     userView: userViewReducer,
+    common: commonReducer,
 });
 
 export const getStore = () => {

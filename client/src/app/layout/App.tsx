@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
-import { Container } from 'semantic-ui-react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
 import './style.css';
@@ -8,15 +7,14 @@ import { NavBar } from './NavBar';
 import { useDispatch } from 'react-redux';
 import { getSelectedActivity } from '../../State/Activities/ActivitiesActions';
 import { HomePage } from '../../features/home/HomePage';
-import { ActivityPage } from '../../features/activities/ActivityPage';
 import {
   createActivityInitiate,
   getActivityDetailsInitiate,
   updateActivityInitiate,
 } from '../../Sagas/GetActivities/ActivitiesActions';
 import { IActivity } from '../models';
-import { CreateActivityPage } from '../../features/activities/CreateActivityPage';
-import { ActivityDetailsPage } from '../../features/activities/ActivityDetailsPage';
+import { ToastContainer } from 'react-toastify';
+import { Routers } from './Routers';
 
 function App() {
   const location = useLocation();
@@ -60,6 +58,11 @@ function App() {
 
   return (
     <Fragment>
+      <ToastContainer
+        position='bottom-right'
+        hideProgressBar
+        theme='colored'
+      />
       {location.pathname === "/"
         ? <HomePage />
         : (
@@ -67,41 +70,12 @@ function App() {
             <NavBar
               formOpen={cancelSelectedActivity}
             />
-            <Container style={{ marginTop: "7em" }}>
-              <Routes>
-                <Route
-                  path='/'
-                  element={<HomePage />}
-                />
-                <Route
-                  path='/activities'
-                  element={
-                    <ActivityPage />
-                  }
-                />
-                <Route
-                  path='/activities/:id'
-                  element={
-                    <ActivityDetailsPage
-                      cancelSelectedActivity={cancelSelectedActivity}
-                      formOpenHandler={formOpenHandler}
-                    />
-                  }
-                />
-                {['/createActivity', '/edit/:id'].map((path: string, idx: number) => (
-                  <Route
-                    key={location.key}
-                    path={path}
-                    element={
-                      <CreateActivityPage
-                        formCloseHandler={formCloseHandler}
-                        createOrEditActivityHandler={createOrEditActivityHandler}
-                      />
-                    }
-                  />
-                ))}
-              </Routes>
-            </Container>
+            <Routers
+              cancelSelectedActivity={cancelSelectedActivity}
+              formOpenHandler={formOpenHandler}
+              formCloseHandler={formCloseHandler}
+              createOrEditActivityHandler={createOrEditActivityHandler}
+            />
           </>
         )
       }

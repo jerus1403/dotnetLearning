@@ -1,4 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
+
 import { IActivity } from '../models';
 
 const sleep = (delayTime: number) => {
@@ -10,13 +12,41 @@ const sleep = (delayTime: number) => {
 axios.defaults.baseURL = 'http://localhost:5000/api';
 
 axios.interceptors.response.use(async response => {
-    try {
-        await sleep(500);
-        return response;
-    } catch (err) {
-        console.log(err);
-        return await Promise.reject(err);
+    await sleep(500);
+    return response;
+}, (error: AxiosError) => {
+    const { data, status, config } = error.response as AxiosResponse;
+    switch (status) {
+        case 400:
+            if (config.method === 'get' && data.errors.hasOwnProperty('id')) {
+                window.location.href = `${window.location.origin}/not-found`;
+            }
+            if (data.errors) {
+                let modalStateErrors: string[] = [];
+                for (const key in data.errors) {
+                    if (data.errors[key]) {
+                        modalStateErrors = [...modalStateErrors, ...data.errors[key]];
+                    }
+                }
+                throw modalStateErrors.flat();
+            } else {
+                toast.error('Bad Request!');
+            }
+            break;
+        case 401:
+            toast.error('Unauthorized!');
+            break;
+        case 403:
+            toast.error('Forbidden!');
+            break;
+        case 404:
+            window.location.href = `${window.location.origin}/not-found`;
+            break;
+        case 500:
+            throw data;
+            break;
     }
+    return Promise.reject(error);
 });
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
