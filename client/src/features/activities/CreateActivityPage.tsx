@@ -9,6 +9,7 @@ import {
     selectedActivitySelector,
 } from "../../State/Activities/ActivitiesSelector";
 import { ActivityForm } from "./form/ActivityForm";
+import { useLocation } from "react-router-dom";
 
 
 interface ICreateActivityPageProps {
@@ -22,36 +23,42 @@ export const CreateActivityPage = (props: ICreateActivityPageProps) => {
         formCloseHandler,
     } = props;
 
+    const location = useLocation();
+
     const selectedActivity = useSelector(selectedActivitySelector);
     const loadingSelectedActivity = useSelector(loadingSelectedActivitySelector);
     const loading = useSelector(loadingSelector);
 
-    const [activity, setActivity] = useState({
+    const initialActivityValues = {
         id: "",
         title: "",
-        date: "",
+        date: null,
         description: "",
         category: "",
         city: "",
         venue: "",
-    });
+    }
+
+    const [activity, setActivity] = useState<IActivity>(initialActivityValues);
 
     useEffect(() => {
-        if (selectedActivity) {
+        if (location.pathname === "/createActivity" && selectedActivity === null) {
+            setActivity(initialActivityValues);
+        }
+        if (selectedActivity && location.pathname !== "/createActivity") {
             setActivity(selectedActivity);
         }
-    }, [selectedActivity]);
+    }, [location.pathname, selectedActivity]);
 
-    const submitHandler = () => {
-        createOrEditActivityHandler(activity);
+    const submitFormHandler = (formActivity: IActivity) => {
+        createOrEditActivityHandler(formActivity);
     };
 
     if (loadingSelectedActivity) return <LoadingComponent content="Loading app" />;
     return (
         <ActivityForm
             loadingSubmission={loading}
-            submitHandler={submitHandler}
-            setActivity={setActivity}
+            submitFormHandler={submitFormHandler}
             selectedActivity={activity}
             formClose={formCloseHandler}
         />

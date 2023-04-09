@@ -1,4 +1,5 @@
 import { put, takeEvery } from "redux-saga/effects";
+import { format } from "date-fns";
 
 import { agent } from "../../app/api/agent";
 import { IActivity } from "../../app/models";
@@ -40,11 +41,11 @@ function* getActivitiesSaga() {
         const activities: IActivity[] = yield agent.Activities.list();
         const convertedActivities = [...activities].map(a => ({
             ...a,
-            date: a.date.split('T')[0],
-        })).sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
+            date: new Date(a.date!),
+        })).sort((a, b) => a.date.getTime() - b.date.getTime());
 
         const activitiesByDateGroup = convertedActivities.reduce((activities, activity) => {
-            const date = activity.date;
+            const date = format(activity.date!, 'dd MMM yyyy');
             activities[date] = activities[date] ? [...activities[date], activity] : [activity];
             return activities;
         }, {} as { [key: string]: IActivity[] });
@@ -73,7 +74,7 @@ function* getActivityDetailsSaga(action: GetActivityDetailsInitiateAction) {
         const activity: IActivity = yield agent.Activities.details(activityId);
         const convertedActivity = {
             ...activity,
-            date: activity.date.split('T')[0],
+            date: new Date(activity.date!),
         };
 
         yield put(getSelectedActivity(convertedActivity));

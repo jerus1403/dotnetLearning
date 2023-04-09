@@ -28,8 +28,6 @@ export const ActivityDetailsPage = (props: IActivityDetailsPageProps) => {
     return (
         <ActivityDetails
             selectedActivity={selectedActivity}
-            cancelSelectedActivity={cancelSelectedActivity}
-            formOpen={formOpenHandler}
         />
     );
 };

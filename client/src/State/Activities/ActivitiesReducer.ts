@@ -19,6 +19,7 @@ import {
     UpdateActivityAction,
     UPDATE_ACTIVITY,
 } from "./ActivitiesTypes";
+import { format } from "date-fns";
 
 const DEFAULT_STATE: IActivitiesReducerState = {
     activityGroups: [],
@@ -70,13 +71,14 @@ export const activitiesReducer = (
         }
         case CREATE_ACTIVITY: {
             const { newActivity } = action as CreateActivityAction;
+            const newActivityDate = format(newActivity.date!, 'dd MMM yyyy');
             let updatedActivityGroups = [...state.activityGroups];
             updatedActivityGroups.forEach(item => {
-                if (item.date === newActivity.date) {
+                if (item.date === newActivityDate) {
                     item.activities.push(newActivity);
                 } else {
                     updatedActivityGroups.push({
-                        date: newActivity.date,
+                        date: newActivityDate,
                         activities: [newActivity],
                     });
                 };
@@ -88,8 +90,9 @@ export const activitiesReducer = (
         }
         case UPDATE_ACTIVITY: {
             const { activity } = action as UpdateActivityAction;
+            const selectedActivityDate = format(activity.date!, 'dd MMM yyyy');
             const updatedActivityGroups = [...state.activityGroups].map(item => {
-                if (item.date === activity.date) {
+                if (item.date === selectedActivityDate) {
                     return item.activities = [...item.activities.filter(a => a.id !== activity.id), activity];
                 }
                 return item;
@@ -101,8 +104,9 @@ export const activitiesReducer = (
         }
         case DELETE_ACTIVITY: {
             const { removeActivity } = action as DeleteActivityAction;
+            const selectedActivityDate = format(removeActivity.date!, 'dd MMM yyyy');
             const updatedActivityGroups = [...state.activityGroups].map(item => {
-                if (item.date === removeActivity.date) {
+                if (item.date === selectedActivityDate) {
                     return item.activities = [...item.activities.filter(a => a.id !== removeActivity.id)];
                 }
                 return item;

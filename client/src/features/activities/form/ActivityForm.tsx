@@ -1,11 +1,19 @@
-import { ChangeEvent } from "react";
-import { Button, Form, Segment } from "semantic-ui-react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { Button, Header, Segment } from "semantic-ui-react";
+
 import { IActivity } from "../../../app/models";
+import {
+    CustomTextInput,
+    CustomTextArea,
+    CustomSelectInput,
+    CustomDateInput,
+} from "../../../app/common";
+import { categoryOptions } from "../../../app/common/constants";
 
 interface IActivityFormProps {
     selectedActivity: IActivity;
-    setActivity: (activity: IActivity) => void;
-    submitHandler: () => void;
+    submitFormHandler: (activity: IActivity) => void;
     formClose: (id: string) => void;
     loadingSubmission: boolean;
 }
@@ -14,77 +22,83 @@ export const ActivityForm = (props: IActivityFormProps) => {
     const {
         selectedActivity,
         formClose,
-        setActivity,
-        submitHandler,
+        submitFormHandler,
         loadingSubmission,
     } = props;
 
-    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        e.preventDefault();
-        const { name, value } = e.target;
-        setActivity({
-            ...selectedActivity,
-            [name]: value,
-        });
-    };
+    const validationSchema = Yup.object({
+        title: Yup.string().required("The activity title is required!"),
+        description: Yup.string().required("The activity description is required!"),
+        category: Yup.string().required("The activity category is required!"),
+        date: Yup.string().required("The activity date is required!"),
+        city: Yup.string().required("The activity city is required!"),
+        venue: Yup.string().required("The activity venue is required!"),
+    });
 
     return (
         <Segment clearing>
-            <Form
-                autoComplete='off'
-                onSubmit={submitHandler}
+            <Header content="Activity Details" color="teal" />
+            <Formik
+                validationSchema={validationSchema}
+                enableReinitialize
+                initialValues={selectedActivity}
+                onSubmit={(values) => submitFormHandler(values)}
             >
-                <Form.Input
-                    placeholder={"Title"}
-                    name={"title"}
-                    value={selectedActivity.title}
-                    onChange={inputOnChangeHandler}
-                />
-                <Form.TextArea
-                    placeholder={"Description"}
-                    name={"description"}
-                    value={selectedActivity.description}
-                    onChange={inputOnChangeHandler}
-                />
-                <Form.Input
-                    placeholder={"Category"}
-                    name={"category"}
-                    value={selectedActivity.category}
-                    onChange={inputOnChangeHandler}
-                />
-                <Form.Input
-                    placeholder={"Date"}
-                    type={"date"}
-                    name={"date"}
-                    value={selectedActivity.date}
-                    onChange={inputOnChangeHandler}
-                />
-                <Form.Input
-                    placeholder={"City"}
-                    name={"city"}
-                    value={selectedActivity.city}
-                    onChange={inputOnChangeHandler}
-                />
-                <Form.Input
-                    placeholder={"Venue"}
-                    name={"venue"}
-                    value={selectedActivity.venue}
-                    onChange={inputOnChangeHandler}
-                />
-                <Button
-                    loading={loadingSubmission}
-                    floated="right"
-                    positive
-                    type="submit"
-                    content="Submit"
-                />
-                <Button
-                    floated="right"
-                    type="button"
-                    content="Cancel"
-                    onClick={() => formClose(selectedActivity.id)}
-                />
-            </Form>
+                {({ handleSubmit, isSubmitting, isValid, dirty }) => {
+                    return (
+                        <Form
+                            className="ui form"
+                            autoComplete="off"
+                            onSubmit={handleSubmit}
+                        >
+                            <CustomTextInput
+                                name={"title"}
+                                placeholder={"Title"}
+                            />
+                            <CustomTextArea
+                                placeholder={"Description"}
+                                name={"description"}
+                                rows={3}
+                            />
+                            <CustomSelectInput
+                                placeholder={"Category"}
+                                name={"category"}
+                                options={categoryOptions}
+                            />
+                            <CustomDateInput
+                                placeholderText={"Date"}
+                                name={"date"}
+                                showTimeSelect
+                                timeCaption={"time"}
+                                dateFormat={"MMMM d, yyyy h:mm aa"}
+                            />
+                            <Header content="Location Details" color="teal" />
+                            <CustomTextInput
+                                placeholder={"City"}
+                                name={"city"}
+                            />
+                            <CustomTextInput
+                                placeholder={"Venue"}
+                                name={"venue"}
+                            />
+                            <Button
+                                disabled={!isValid || isSubmitting || !dirty}
+                                loading={loadingSubmission}
+                                floated="right"
+                                positive
+                                type="submit"
+                                content="Submit"
+                            />
+                            <Button
+                                floated="right"
+                                type="button"
+                                content="Cancel"
+                                onClick={() => formClose(selectedActivity.id)}
+                            />
+                        </Form>
+                    );
+                }}
+            </Formik>
         </Segment>
     );
 };
