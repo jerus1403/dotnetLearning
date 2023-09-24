@@ -7,13 +7,15 @@ import { CreateActivityPage } from "../../features/activities/CreateActivityPage
 import { NotFound } from "../../features/errors/NotFound";
 import { HomePage } from "../../features/home/HomePage";
 import { ServerErrorPart } from "../../features/parts/ServerErrorPart";
-import { IActivity } from "../models";
+import { IActivity, IUserFormValues } from "../models";
+import { LoginPage } from "../../pages/LoginPage";
 
 interface IRouterProps {
     cancelSelectedActivity: () => void;
     formOpenHandler: (id: string) => void;
     formCloseHandler: (id: string) => void;
     createOrEditActivityHandler: (activity: IActivity) => void;
+    loginHandler: (userCredentials: IUserFormValues) => void;
 }
 
 export const Routers = (props: IRouterProps) => {
@@ -23,6 +25,7 @@ export const Routers = (props: IRouterProps) => {
         formOpenHandler,
         formCloseHandler,
         createOrEditActivityHandler,
+        loginHandler,
     } = props;
 
     return (
@@ -63,6 +66,15 @@ export const Routers = (props: IRouterProps) => {
                         }
                     />
                 ))}
+                {/* Activity Details Route */}
+                <Route
+                    path='/login'
+                    element={
+                        <LoginPage
+                            loginHandler={loginHandler}
+                        />
+                    }
+                />
                 {/* Errors Route */}
                 <Route
                     path='/errors'

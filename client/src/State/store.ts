@@ -7,6 +7,7 @@ import { AddWatchers } from "../StateWatchers/AddWatchers";
 import { userViewReducer } from "./UserView/UserViewReducer";
 import { activitiesReducer } from "./Activities/ActivitiesReducer";
 import { commonReducer } from "./CommonStore/CommonReducer";
+import { userReducer } from "./User/UserReducer";
 
 const sagas = createSagaMiddleware();
 
@@ -14,6 +15,7 @@ export const rootReducer = combineReducers({
     activities: activitiesReducer,
     userView: userViewReducer,
     common: commonReducer,
+    user: userReducer,
 });
 
 export const getStore = () => {

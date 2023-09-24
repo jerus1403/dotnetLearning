@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
-import { IActivity } from '../models';
+import { IActivity, IUser, IUserFormValues } from '../models';
 
 const sleep = (delayTime: number) => {
     return new Promise((resolve) => {
@@ -44,7 +44,6 @@ axios.interceptors.response.use(async response => {
             break;
         case 500:
             throw data;
-            break;
     }
     return Promise.reject(error);
 });
@@ -66,6 +65,13 @@ const Activities = {
     delete: (id: string) => request.del<void>(`/activities/${id}`),
 };
 
+const Account = {
+    current: () => request.get<IUser>('/account'),
+    login: (user: IUserFormValues) => request.post<IUser>('/account/login', user),
+    register: (user: IUserFormValues) => request.post<IUser>('account/register', user),
+};
+
 export const agent = {
     Activities,
+    Account,
 };

@@ -1,20 +1,23 @@
 import { Fragment } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { v4 as uuid } from 'uuid';
+import { ToastContainer } from 'react-toastify';
 
 import './style.css';
 import { NavBar } from './NavBar';
-import { useDispatch } from 'react-redux';
-import { getSelectedActivity } from '../../State/Activities/ActivitiesActions';
 import { HomePage } from '../../features/home/HomePage';
+import { IActivity, IUserFormValues } from '../models';
+import { Routers } from './Routers';
+
 import {
   createActivityInitiate,
   getActivityDetailsInitiate,
   updateActivityInitiate,
 } from '../../Sagas/GetActivities/ActivitiesActions';
-import { IActivity } from '../models';
-import { ToastContainer } from 'react-toastify';
-import { Routers } from './Routers';
+import { loginInitiate } from '../../Sagas/User/UserActions';
+
+import { getSelectedActivity } from '../../State/Activities/ActivitiesActions';
 
 function App() {
   const location = useLocation();
@@ -56,6 +59,10 @@ function App() {
     dispatch(getActivityDetailsInitiate(id));
   };
 
+  const loginHandler = (userCredentials: IUserFormValues) => {
+    dispatch(loginInitiate(userCredentials));
+  }
+
   return (
     <Fragment>
       <ToastContainer
@@ -75,6 +82,7 @@ function App() {
               formOpenHandler={formOpenHandler}
               formCloseHandler={formCloseHandler}
               createOrEditActivityHandler={createOrEditActivityHandler}
+              loginHandler={loginHandler}
             />
           </>
         )

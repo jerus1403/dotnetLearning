@@ -6,6 +6,7 @@ interface ICustomTextInput {
     placeholder: string;
     name: string;
     label?: string;
+    type?: string;
 }
 
 export const CustomTextInput = (props: ICustomTextInput) => {

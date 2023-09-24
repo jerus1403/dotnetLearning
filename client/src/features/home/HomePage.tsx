@@ -34,11 +34,11 @@ export const HomePage = () => {
                 />
                 <Button
                     as={Link}
-                    to="/activities"
+                    to="/login"
                     size="huge"
                     inverted
                 >
-                    Take me to the Activities!
+                    Login!
                 </Button>
             </Container>
         </Segment>
